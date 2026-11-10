@@ -1,0 +1,20 @@
+digraph "ATM session (lock after 3 wrong PINs)" {
+  rankdir=LR; bgcolor="white";
+  node [shape=circle fontname="Helvetica" fontsize=11];
+  edge [fontname="Helvetica" fontsize=10];
+  __start [shape=point width=0.08];
+  "AUTH" [shape=doublecircle];
+  "LOCK" [shape=circle];
+  "s0" [shape=circle];
+  "s1" [shape=circle];
+  "s2" [shape=circle];
+  __start -> "s0";
+  "s0" -> "AUTH" [label="C"];
+  "s0" -> "s1" [label="W"];
+  "s1" -> "AUTH" [label="C"];
+  "s1" -> "s2" [label="W"];
+  "s2" -> "AUTH" [label="C"];
+  "s2" -> "LOCK" [label="W"];
+  "AUTH" -> "AUTH" [label="C, W"];
+  "LOCK" -> "LOCK" [label="C, W"];
+}

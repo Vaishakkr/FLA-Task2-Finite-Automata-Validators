@@ -1,0 +1,31 @@
+digraph "E-mail format (NFA)" {
+  rankdir=LR;
+  node [shape=circle fontname="Helvetica" fontsize=11];
+  edge [fontname="Helvetica" fontsize=10];
+  __start [shape=point width=0.08];
+  "n0" [shape=circle];
+  "n1" [shape=circle];
+  "n2" [shape=circle];
+  "n3" [shape=circle];
+  "n4" [shape=circle];
+  "n5" [shape=circle];
+  "n6" [shape=circle];
+  "n7" [shape=circle];
+  "n8" [shape=doublecircle];
+  __start -> "n0";
+  "n0" -> "n1" [label="L, D"];
+  "n1" -> "n1" [label="L, D"];
+  "n1" -> "n2" [label="., -, _"];
+  "n2" -> "n1" [label="L, D"];
+  "n1" -> "n3" [label="@"];
+  "n3" -> "n4" [label="L, D"];
+  "n4" -> "n4" [label="L, D"];
+  "n4" -> "n5" [label="-"];
+  "n5" -> "n5" [label="-"];
+  "n5" -> "n4" [label="L, D"];
+  "n4" -> "n6" [label="."];
+  "n4" -> "n3" [label="."];
+  "n6" -> "n7" [label="L"];
+  "n7" -> "n8" [label="L"];
+  "n8" -> "n8" [label="L"];
+}

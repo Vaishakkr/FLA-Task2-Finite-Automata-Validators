@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>FA Validators - live demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+ body{font-family:Segoe UI,Helvetica,Arial,sans-serif;margin:0;background:#f6f7f9;color:#1d2330}
+ header{background:#1f3b63;color:#fff;padding:14px 24px}
+ header h1{margin:0;font-size:20px} header p{margin:4px 0 0;font-size:13px;opacity:.85}
+ main{display:grid;grid-template-columns:380px 1fr;gap:18px;padding:18px 24px}
+ .card{background:#fff;border:1px solid #dde1e7;border-radius:8px;padding:14px}
+ label{font-size:13px;font-weight:600;display:block;margin:8px 0 4px}
+ select,input{width:100%;box-sizing:border-box;padding:8px;font-size:15px;border:1px solid #bfc6d1;border-radius:6px;font-family:Consolas,monospace}
+ .verdict{margin-top:12px;padding:10px;border-radius:6px;font-weight:700;text-align:center;font-size:16px}
+ .ok{background:#e3f4e7;color:#16692c}.bad{background:#fbe5e5;color:#9b1c1c}
+ table{border-collapse:collapse;width:100%;font-size:13px;font-family:Consolas,monospace}
+ td,th{border-bottom:1px solid #eceff3;padding:4px 6px;text-align:left}
+ .chips span{display:inline-block;margin:3px;padding:3px 8px;border-radius:12px;font-size:12px;cursor:pointer;font-family:Consolas,monospace}
+ .a{background:#e3f4e7}.r{background:#fbe5e5}
+ #diagram svg{max-width:100%;height:auto}
+ #diagram .cur ellipse{fill:#ffd54f!important}
+ #diagram .visited ellipse{fill:#e8f0fe}
+ small{color:#5b6473}
+</style></head><body>
+<header><h1>Finite-automata validators &mdash; live demo</h1>
+<p>21CSC301T Formal Language and Automata &middot; CLA-2 Task 2 &middot; K R Vaishak (RA2411026050018)</p></header>
+<main>
+<div class="card">
+ <label>Application</label><select id="app"></select>
+ <label>Input string</label><input id="inp" autocomplete="off">
+ <div id="verdict" class="verdict"></div>
+ <label>Examples (click to try)</label><div class="chips" id="chips"></div>
+ <p><small id="info"></small></p>
+</div>
+<div class="card">
+ <div id="diagram"></div>
+ <table><thead><tr><th>#</th><th>state</th><th>char</th><th>class</th><th>next</th></tr></thead><tbody id="trace"></tbody></table>
+</div>
+</main>
+<script>
+const A = __JSON__;
+const SVG = __SVG__;
+const CLASSIFY = {
+ pin: c => /[0-9]/.test(c) ? "D" : "O",
+ session: c => c,
+ password: c => /[A-Z]/.test(c)?"U":/[a-z]/.test(c)?"L":/[0-9]/.test(c)?"D":"!@#$%^&*()-_=+[]{};:,.?/".includes(c)?"S":"O",
+ email: c => /[A-Za-z]/.test(c)?"L":/[0-9]/.test(c)?"D":({".":"DOT","-":"HY","_":"US","@":"AT"}[c]||"O")
+};
+const sel = document.getElementById("app"), inp = document.getElementById("inp");
+for (const k in A) sel.add(new Option(A[k].title, k));
+function run(){
+ const k = sel.value, d = A[k], s = inp.value;
+ let st = d.start; const rows = [], visited = new Set([st]);
+ [...s].forEach((ch,i)=>{const sym = CLASSIFY[k](ch);
+   const nx = d.alphabet.includes(sym) ? (d.delta[st+"|"+sym]||"qD") : "qD";
+   rows.push(`<tr><td>${i+1}</td><td>${st}</td><td>${ch===" "?"&#9251;":ch}</td><td>${sym}</td><td>${nx}</td></tr>`);
+   st = nx; visited.add(st);});
+ const ok = d.accepting.includes(st);
+ const v = document.getElementById("verdict");
+ v.className = "verdict " + (ok?"ok":"bad");
+ v.textContent = (ok?"ACCEPTED":"REJECTED") + " - final state " + st;
+ document.getElementById("trace").innerHTML = rows.join("");
+ const dg = document.getElementById("diagram");
+ dg.querySelectorAll("g.node").forEach(g=>{const t=g.querySelector("title").textContent;
+   g.classList.toggle("cur", t===st); g.classList.toggle("visited", visited.has(t)&&t!==st);});
+}
+function load(){
+ const k = sel.value, d = A[k];
+ document.getElementById("diagram").innerHTML = SVG[k] || "<p><small>The minimal password DFA has "+d.states+" states, too many to draw usefully. The trace below still shows every transition. See docs/diagrams/password_coverage.svg for the 16-state class-coverage part.</small></p>";
+ document.getElementById("chips").innerHTML =
+   d.examples.accept.map(x=>`<span class="a">${x||"(empty)"}</span>`).join("") +
+   d.examples.reject.map(x=>`<span class="r">${x||"(empty)"}</span>`).join("");
+ document.querySelectorAll("#chips span").forEach(sp=>sp.onclick=()=>{inp.value = sp.textContent==="(empty)"?"":sp.textContent; run();});
+ document.getElementById("info").textContent = d.name + " - " + d.states + " live states; alphabet {" + d.alphabet.join(", ") + "}";
+ inp.value = d.examples.accept[0]; run();
+}
+sel.onchange = load; inp.oninput = run;
+const h = new URLSearchParams(location.hash.slice(1));
+if (h.get("app")) sel.value = h.get("app");
+load();
+if (h.has("s")) { inp.value = h.get("s"); run(); }
+</script></body></html>

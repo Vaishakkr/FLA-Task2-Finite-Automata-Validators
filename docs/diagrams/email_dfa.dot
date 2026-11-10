@@ -1,0 +1,35 @@
+digraph "E-mail format (minimal DFA)" {
+  rankdir=LR; bgcolor="white";
+  node [shape=circle fontname="Helvetica" fontsize=11];
+  edge [fontname="Helvetica" fontsize=10];
+  __start [shape=point width=0.08];
+  "m0" [shape=circle];
+  "m1" [shape=circle];
+  "m2" [shape=circle];
+  "m3" [shape=circle];
+  "m4" [shape=circle];
+  "m5" [shape=circle];
+  "m6" [shape=circle];
+  "m7" [shape=doublecircle];
+  __start -> "m0";
+  "m0" -> "m1" [label="L, D"];
+  "m1" -> "m1" [label="L, D"];
+  "m1" -> "m0" [label="., -, _"];
+  "m1" -> "m2" [label="@"];
+  "m2" -> "m3" [label="L, D"];
+  "m3" -> "m3" [label="L, D"];
+  "m3" -> "m4" [label="."];
+  "m3" -> "m5" [label="-"];
+  "m4" -> "m6" [label="L"];
+  "m4" -> "m3" [label="D"];
+  "m5" -> "m3" [label="L, D"];
+  "m5" -> "m5" [label="-"];
+  "m6" -> "m7" [label="L"];
+  "m6" -> "m3" [label="D"];
+  "m6" -> "m4" [label="."];
+  "m6" -> "m5" [label="-"];
+  "m7" -> "m7" [label="L"];
+  "m7" -> "m3" [label="D"];
+  "m7" -> "m4" [label="."];
+  "m7" -> "m5" [label="-"];
+}
