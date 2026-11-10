@@ -258,7 +258,7 @@ APPLICATIONS = {
         "title": "E-mail format",
         "dfa": EMAIL_DFA,
         "accept": ["vaishak.kr@srmist.edu.in", "ra2411026050018@srmist.edu.in",
-                   "deepak_vf@gmail.com", "a-b.c@my-site.co", "x@y.io",
+                   "srm_student@gmail.com", "a-b.c@my-site.co", "x@y.io",
                    "user@xn--p1ai-test.org"],
         "reject": ["vaishak@srmist", ".vaishak@gmail.com", "vaishak..kr@gmail.com",
                    "vaishak@-srm.in", "vaishak@srm.c0m", "vaishak@@gmail.com",
